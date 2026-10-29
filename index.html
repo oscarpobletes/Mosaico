@@ -204,6 +204,54 @@ textarea {
   font-size: 13px;
   margin: 6px 0;
 }
+.form-msg {
+  display: none;
+  font-size: 13.5px;
+  line-height: 1.4;
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.form-msg:not(:empty) {
+  display: block;
+  background: rgba(229, 83, 75, 0.1);
+  color: #c93b32;
+  border: 1px solid rgba(229, 83, 75, 0.3);
+  border-left: 4px solid #e5534b;
+}
+.form-msg.warn:not(:empty) {
+  background: rgba(240, 180, 41, 0.12);
+  color: #b45309;
+  border-color: rgba(240, 180, 41, 0.35);
+  border-left-color: #f0b429;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .form-msg:not(:empty) {
+    background: rgba(229, 83, 75, 0.2);
+    color: #ff857d;
+    border-color: rgba(229, 83, 75, 0.4);
+    border-left-color: #e5534b;
+  }
+  :root:not([data-theme='light']) .form-msg.warn:not(:empty) {
+    background: rgba(240, 180, 41, 0.2);
+    color: #fbbf24;
+    border-color: rgba(240, 180, 41, 0.4);
+    border-left-color: #f0b429;
+  }
+}
+:root[data-theme='dark'] .form-msg:not(:empty) {
+  background: rgba(229, 83, 75, 0.2);
+  color: #ff857d;
+  border-color: rgba(229, 83, 75, 0.4);
+  border-left-color: #e5534b;
+}
+:root[data-theme='dark'] .form-msg.warn:not(:empty) {
+  background: rgba(240, 180, 41, 0.2);
+  color: #fbbf24;
+  border-color: rgba(240, 180, 41, 0.4);
+  border-left-color: #f0b429;
+}
 .lang {
   display: inline-flex;
 }
@@ -498,7 +546,22 @@ body:not(.accounts) #subjectsPane {
 .savebar .hint {
   margin: 0;
 }
-/* Subjects editor: one block per subject; the name is the field itself, teachers are a tick list */
+#sState.dirty {
+  color: #b45309;
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) #sState.dirty {
+    color: #fbbf24;
+  }
+}
+:root[data-theme='dark'] #sState.dirty {
+  color: #fbbf24;
+}
+#sState:not(.dirty) {
+  color: var(--gt);
+}
+/* Subjects editor: clean list with edit pencil and teacher assignment */
 li.subj {
   display: block;
   padding: 10px 0 10px 12px;
@@ -509,17 +572,15 @@ li.subj.changed {
 }
 .subj-head {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
 }
 .subj-name {
   flex: 1;
   min-width: 0;
   font-weight: 600;
-}
-.subj-name:hover,
-.subj-name:focus {
-  border-color: var(--g);
+  font-size: 15px;
+  word-break: break-word;
 }
 .smeta {
   display: block;
@@ -763,7 +824,7 @@ button:disabled {
 <dialog id="editDlg" class="np">
  <div class="row"><input id="eName" data-ph="phName"><select id="eCountry"></select><input id="eCareer" data-ph="phCareer" list="careers"></div>
  <div class="row"><button class="p" id="eSave" data-i="saveChanges"></button><button id="eCancel" data-i="cancel"></button></div>
- <p class="hint" id="eMsg"></p>
+ <p class="form-msg warn" id="eMsg" role="alert"></p>
 </dialog>
 <div class="intro np">
  <h1>Mosaico</h1>
@@ -774,7 +835,7 @@ button:disabled {
  <p class="hint" data-i="gateTitle"></p>
  <div class="row"><input id="user" data-ph="phUser" autocomplete="username" autocapitalize="none"><input id="pass" type="password" data-ph="phPass" autocomplete="current-password"></div>
  <div class="row"><button class="p" id="loginGo" data-i="signIn"></button></div>
- <p class="hint" id="loginMsg"></p>
+ <p class="form-msg" id="loginMsg" role="alert"></p>
  <p class="hint gate-demo" data-i="gateDemoHint"></p>
  <button id="gateDemo" data-i="demo"></button>
 </div></div>
@@ -943,6 +1004,7 @@ const STR=[
 ['emptyView','Aún no hay rondas guardadas en este curso.','No saved rounds in this course yet.'],
 ['need4','Se necesitan al menos 4 estudiantes presentes (ver «Asistencia de hoy» en esta pestaña).','At least 4 students must be present (see “Today’s attendance” on this tab).'],
 ['saveFirst','Primero hay que generar equipos nuevos para poder guardarlos.','New teams must be generated first in order to save them.'],
+['phRound','Seleccionar ronda…','Select round…'],
 ['pickRound','Primero hay que generar o seleccionar una ronda.','A round must be generated or selected first.'],
 ['confirmDelRound','¿Eliminar esta ronda del historial? Dejará de contar para evitar repeticiones.','Delete this round from the history? It will no longer count toward avoiding repeats.'],
 ['teamN','Equipo {0}','Team {0}'],
@@ -1012,11 +1074,12 @@ const STR=[
 ['loginBad','Correo o contraseña incorrectos.','Incorrect email or password.'],
 ['gateTitle','Los datos reales requieren iniciar sesión.','Real data requires signing in.'],
 ['profileAdmin','Admin','Admin'],['profileCoordinator','Coordinación','Coordinator'],['profileProfessor','Profesorado','Teacher'],
-['phUser','Correo *','Email *'],['phNewPass','Contraseña (mín. 8) *','Password (min. 8) *'],
+['phUser','Correo *','Email *'],['phNewPass','Contraseña (mín. 8) *','Password (min. 8) *'],['phRole','Perfil *','Profile *'],
 ['tabUsers','3. Usuarios','3. Users'],
 ['usersTitle','Usuarios y permisos','Users and permissions'],
 ['usersHint','Admin: todo, incluidos los estudiantes, los usuarios y la eliminación de rondas. Coordinación: lo mismo que admin, y puede impartir materias. Profesorado: solo equipos. Las acciones de esta pestaña se aplican al instante.','Admin: everything, including students, users and deleting rounds. Coordinator: the same as admin, and can teach subjects. Teacher: teams only. Actions on this tab apply immediately.'],
 ['createUser','Crear usuario','Create user'],
+['needRole','El perfil es obligatorio (*).','Profile is required (*).'],
 ['badUser','Correo no válido. Contraseña: de 8 a 72 caracteres.','Invalid email. Password: 8 to 72 characters.'],
 ['errUsers','No se pudo completar la acción: {0}','The action could not be completed: {0}'],
 ['adminError.unauthorized','No autorizado.','Not authorized.'],
@@ -1042,9 +1105,12 @@ const STR=[
 ['tour.users.x','Admin crea y elimina usuarios, cambia su perfil y restablece contraseñas. Cada perfil define qué pestañas y acciones tiene cada usuario.','The admin creates and deletes users, changes their profile, and resets passwords. Each profile defines which tabs and actions each user has.'],
 ['tabSubjects','4. Materias','4. Subjects'],
 ['subjectsTitle','Materias y profesorado','Subjects and teachers'],
-['subjectsHint','Se marca quién imparte cada materia (profesorado y coordinación). Un profesor solo puede guardar rondas de las suyas; admin y coordinación pueden usar todas, y a coordinación las suyas le aparecen primero. El nombre de cada materia se edita directamente en su casilla; las rondas ya guardadas conservan el nombre con el que se guardaron. Nada se aplica hasta pulsar «Guardar cambios».','Tick who teaches each subject (teachers and coordinators). A teacher can only save rounds for their own; admins and coordinators can use all of them, and coordinators see theirs first. Each subject name is edited right in its field; rounds already saved keep the name they were saved with. Nothing is applied until “Save changes” is pressed.'],
+['subjectsHint','Se marca quién imparte cada materia (profesorado y coordinación). El lápiz permite renombrar la materia y la papelera quitarla. Un profesor solo puede guardar rondas de las suyas; admin y coordinación pueden usar todas. Nada se aplica hasta pulsar «Guardar cambios».','Tick who teaches each subject (teachers and coordinators). The pencil renames a subject and the trash can removes it. A teacher can only save rounds for their own; admins and coordinators can use all of them. Nothing is applied until “Save changes” is pressed.'],
 ['phNewSubject','Nombre de la materia *','Subject name *'],
 ['addSubject','Añadir materia','Add subject'],
+['editSubject','Editar materia {0}','Edit subject {0}'],
+['promptEditSubject','Nombre de la materia (máximo 200 caracteres):','Subject name (max. 200 characters):'],
+['confirmDropSingleSubject','¿Quitar la materia «{0}» de la lista?','Remove the subject “{0}” from the list?'],
 ['subjectNameLabel','Nombre de la materia','Subject name'],
 ['teachersOne','1 profesor:','1 teacher:'],['teachersMany','{0} profesores:','{0} teachers:'],
 ['noTeachers','Sin profesor asignado','No teacher assigned'],
@@ -1127,18 +1193,21 @@ function notify(message, kind = 'info') {
   }
   el.timer = setTimeout(() => el.remove(), ms);
 }
-function ask(message, { input = false, type = 'text', ok } = {}) {
+function ask(message, { input = false, type = 'text', ok, value = '' } = {}) {
   // resolves true/false, or the typed text (null if cancelled) when input is requested
   return new Promise((resolve) => {
     const box = $('modalInput');
     $('modalText').textContent = message;
     box.hidden = !input;
     box.type = type;
-    box.value = '';
+    box.value = value;
     $('modalOk').textContent = ok || t('ok');
     $('modalCancel').textContent = t('cancel');
     $('modal').hidden = false;
     (input ? box : $('modalOk')).focus();
+    if (input && value) {
+      box.select();
+    }
     const done = (v) => {
       $('modal').hidden = true;
       $('modalOk').onclick = $('modalCancel').onclick = box.onkeydown = $('modal').onkeydown = null;
@@ -1687,7 +1756,7 @@ const startYear = new Date().getMonth() >= 7 ? new Date().getFullYear() : new Da
 const courseLabel = (y) => y + '/' + String((y + 1) % 100).padStart(2, '0');
 const state = {
   course: courseLabel(startYear),
-  view: 'draft',
+  view: '',
   draft: null,
   selected: null,
   absent: new Set(),
@@ -1821,15 +1890,13 @@ function renderView() {
   const rounds = course().rounds,
     draft = state.draft;
   $('roundSel').innerHTML =
+    `<option value="">${esc(t('phRound'))}</option>` +
     (draft ? `<option value="draft">${esc(t('draft'))}</option>` : '') +
     rounds.map((r, i) => `<option value="${i}">${esc(r.title)} (${esc(fmtDate(r.date))})</option>`).join('');
-  if (state.view === 'draft' && !draft && rounds.length) {
-    state.view = rounds.length - 1;
+  if (state.view !== 'draft' && state.view !== '' && !rounds[state.view]) {
+    state.view = draft ? 'draft' : '';
   }
-  if (state.view !== 'draft' && !rounds[state.view]) {
-    state.view = draft ? 'draft' : rounds.length ? rounds.length - 1 : 'draft';
-  }
-  $('roundSel').value = String(state.view);
+  $('roundSel').value = state.view == null ? '' : String(state.view);
   const editing = state.view === 'draft' && !!draft,
     r = currentRound();
   $('adjHint').hidden = !editing;
@@ -1936,7 +2003,7 @@ function tab(name) {
 }
 document.querySelectorAll('nav button').forEach((b) => (b.onclick = () => tab(b.dataset.tab)));
 $('course').onchange = (e) => {
-  Object.assign(state, { course: e.target.value, draft: null, selected: null, view: 'draft' });
+  Object.assign(state, { course: e.target.value, draft: null, selected: null, view: '' });
   refresh();
 };
 document.addEventListener('click', (e) => {
@@ -2104,7 +2171,7 @@ $('undoBtn').onclick = () => {
 };
 $('roundSel').onchange = (e) => {
   state.selected = null;
-  state.view = e.target.value === 'draft' ? 'draft' : +e.target.value;
+  state.view = e.target.value === 'draft' ? 'draft' : e.target.value === '' ? '' : +e.target.value;
   renderView();
 };
 ['subjectSel', 'subjectOther', 'roundDate', 'activity'].forEach((id) =>
@@ -2779,7 +2846,7 @@ async function loadUsers() {
   renderUsers();
 }
 function renderUsers() {
-  $('uRole').innerHTML = roleOptions($('uRole').value || 'professor');
+  $('uRole').innerHTML = `<option value="">${esc(t('phRole'))}</option>` + roleOptions($('uRole').value);
   const mine = currentEmail();
   $('userList').innerHTML = state.users
     .map((u) => {
@@ -2806,6 +2873,10 @@ $('uAdd').onclick = async () => {
   const email = $('uName').value.trim().toLowerCase(),
     password = $('uPass').value,
     role = $('uRole').value;
+  if (!role) {
+    notify(t('needRole'), 'warn');
+    return;
+  }
   if (!EMAIL_RE.test(email) || password.length < 8 || password.length > 72) {
     notify(t('badUser'), 'warn');
     return;
@@ -2819,6 +2890,7 @@ $('uAdd').onclick = async () => {
   ) {
     $('uName').value = '';
     $('uPass').value = '';
+    $('uRole').value = '';
     notify(t('savedChange'));
     await loadUsers();
   }
@@ -3010,7 +3082,8 @@ function renderSubjectsAdmin() {
             meta = subjectMeta(s);
           return (
             `<li class="subj${meta ? ' changed' : ''}" data-row="${k}">` +
-            `<div class="subj-head"><input class="subj-name" data-sname="${k}" value="${esc(s.name)}" maxlength="200" autocomplete="off" aria-label="${esc(t('subjectNameLabel'))}">` +
+            `<div class="subj-head"><span class="subj-name">${esc(s.name)}</span>` +
+            iconButton('data-sedit', s.key, t('editSubject', s.name), 'edit') +
             iconButton('data-sdel', s.key, t('removeSubject', s.name), 'bin') +
             `</div><small class="smeta">${meta}</small>` +
             `<details class="picker" data-pick="${k}"${openPickers.has(s.key) ? ' open' : ''}><summary>${subjectSummary(s)}</summary>` +
@@ -3026,6 +3099,7 @@ function syncSubjectsBar() {
   const dirty = subjectsDirty();
   $('sSave').disabled = $('sDiscard').disabled = !dirty;
   $('sState').textContent = t(dirty ? 'unsaved' : 'allSaved');
+  $('sState').classList.toggle('dirty', dirty);
 }
 const draftRow = (key) => {
   subjectDraft = subjectDraft || cloneCatalog(state.catalog);
@@ -3035,6 +3109,7 @@ const refreshRow = (s) => {
   const li = $('subjectList').querySelector(`[data-row="${CSS.escape(s.key)}"]`);
   if (li) {
     const meta = subjectMeta(s);
+    li.querySelector('.subj-name').textContent = s.name;
     li.querySelector('.smeta').innerHTML = meta;
     li.classList.toggle('changed', !!meta);
     li.querySelector('summary').innerHTML = subjectSummary(s);
@@ -3096,26 +3171,11 @@ $('subjectList').oninput = (e) => {
       shown += hit;
     });
     grid.querySelector('.tnomatch').hidden = shown > 0;
-    return;
-  }
-  // renaming: the draft follows every keystroke, so Save is ready without leaving the field
-  const key = e.target.dataset.sname;
-  if (key) {
-    const s = draftRow(key);
-    s.name = e.target.value.trim();
-    refreshRow(s);
   }
 };
 $('subjectList').onchange = (e) => {
   const el = e.target;
-  if (el.dataset.sname) {
-    const s = draftRow(el.dataset.sname),
-      problem = subjectNameProblem(subjectDraft);
-    if (problem) {
-      notify(problem, 'warn');
-    }
-    el.value = s.name;
-  } else if (el.dataset.tkey) {
+  if (el.dataset.tkey) {
     const s = draftRow(el.dataset.tkey);
     s.teachers = el.checked ? [...s.teachers, el.value].sort() : s.teachers.filter((x) => x !== el.value);
     refreshRow(s);
@@ -3131,12 +3191,35 @@ $('subjectList').addEventListener(
   },
   true
 ); // "toggle" does not bubble
-$('subjectList').onclick = (e) => {
-  const b = e.target.closest('button[data-sdel]');
-  if (b) {
-    draftRow(b.dataset.sdel);
-    subjectDraft = subjectDraft.filter((x) => x.key !== b.dataset.sdel);
+$('subjectList').onclick = async (e) => {
+  const bEdit = e.target.closest('button[data-sedit]');
+  if (bEdit) {
+    const s = draftRow(bEdit.dataset.sedit);
+    const newName = await ask(t('promptEditSubject'), { input: true, value: s.name, ok: t('saveChanges') });
+    if (newName !== null) {
+      const trimmed = newName.trim();
+      if (!trimmed) {
+        notify(t('needSubjectName'), 'warn');
+        return;
+      }
+      if (trimmed !== s.name && (subjectDraft || state.catalog).some((x) => x.key !== s.key && norm(x.name) === norm(trimmed))) {
+        notify(t('dupSubject'), 'warn');
+        return;
+      }
+      s.name = trimmed;
+      refreshRow(s);
+    }
+    return;
+  }
+  const bDel = e.target.closest('button[data-sdel]');
+  if (bDel) {
+    const s = draftRow(bDel.dataset.sdel);
+    if (!(await ask(t('confirmDropSingleSubject', s.name), { ok: t('remove') }))) {
+      return;
+    }
+    subjectDraft = subjectDraft.filter((x) => x.key !== bDel.dataset.sdel);
     renderSubjectsAdmin();
+    return;
   }
 };
 $('sDiscard').onclick = () => {
