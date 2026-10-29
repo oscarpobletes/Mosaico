@@ -8,6 +8,8 @@
 // Failures answer HTTP 200 with { error: <code> } so the app can translate them.
 
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.117.3';
+// The CORS headers that match what supabase-js sends from the browser (it adds new headers over time).
+import { corsHeaders } from 'npm:@supabase/supabase-js@2.117.3/cors';
 
 const ROLES = ['admin', 'coordinator', 'professor'] as const;
 // Roles that manage the app. A coordinator has the same permissions as an admin and can teach subjects.
@@ -22,9 +24,9 @@ const MAX_PASSWORD_LENGTH = 72; // bcrypt ignores everything past 72 bytes
 const USERS_PAGE_SIZE = 1000;
 
 const CORS_HEADERS = {
+  ...corsHeaders,
   'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') ?? '*',
   Vary: 'Origin',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
