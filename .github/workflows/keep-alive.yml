@@ -1,0 +1,42 @@
+# Queries the Supabase database twice a week so a free project is never paused for inactivity.
+# Needs NO repository secrets: it reads the project URL and the PUBLIC anon / publishable key from SB in
+# index.html (the same values every visitor's browser already receives). While SB is empty (local mode) it
+# simply does nothing.
+name: keep-alive
+
+on:
+  schedule:
+    - cron: '17 6 * * 1,4' # Mondays and Thursdays, 06:17 UTC
+  workflow_dispatch: {}    # also runnable by hand from the Actions tab
+
+permissions:
+  contents: read           # only to read index.html
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: index.html
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Call public.ping()
+        run: |
+          line=$(grep -m1 '^const SB = {' index.html || true)
+          url=$(printf '%s' "$line" | sed -nE "s/.*url: *'([^']*)'.*/\1/p")
+          key=$(printf '%s' "$line" | sed -nE "s/.*key: *'([^']*)'.*/\1/p")
+          if [ -z "$url" ] || [ -z "$key" ]; then
+            echo "SB.url / SB.key are empty in index.html (local mode): nothing to ping."
+            exit 0
+          fi
+          auth=()
+          case "$key" in eyJ*) auth=(-H "Authorization: Bearer $key") ;; esac # legacy anon JWT; sb_publishable_ keys go in apikey only
+          curl --fail --silent --show-error --retry 3 \
+            -X POST "$url/rest/v1/rpc/ping" \
+            -H "apikey: $key" "${auth[@]}" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+          echo

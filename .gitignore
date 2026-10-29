@@ -1,0 +1,13 @@
+# Anything with real staff or student data must never be committed
+seed.sql
+*.private.sql
+*.csv
+
+# Secrets and local tooling
+.env
+.env.*
+node_modules/
+
+# OS clutter
+.DS_Store
+Thumbs.db
