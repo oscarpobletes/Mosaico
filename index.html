@@ -1104,13 +1104,27 @@ function shuffle(a) {
   return a;
 } // Fisher–Yates
 
+const TOAST_MAX = 3; // at most this many notices on screen; the oldest goes first
 function notify(message, kind = 'info') {
+  const box = $('toast'),
+    ms = kind === 'error' ? 9000 : 5000;
+  // the same notice again (e.g. a button pressed several times) refreshes the one on screen instead of stacking
+  const same = [...box.children].find((x) => x.dataset.msg === message);
+  if (same) {
+    clearTimeout(same.timer);
+    same.timer = setTimeout(() => same.remove(), ms);
+    return;
+  }
   const el = document.createElement('div');
   el.className = 'toast ' + kind;
+  el.dataset.msg = message;
   el.innerHTML = `<span>${esc(message)}</span><button type="button" aria-label="×">×</button>`;
   el.querySelector('button').onclick = () => el.remove();
-  $('toast').appendChild(el);
-  setTimeout(() => el.remove(), kind === 'error' ? 9000 : 5000);
+  box.appendChild(el);
+  while (box.children.length > TOAST_MAX) {
+    box.firstElementChild.remove();
+  }
+  el.timer = setTimeout(() => el.remove(), ms);
 }
 function ask(message, { input = false, type = 'text', ok } = {}) {
   // resolves true/false, or the typed text (null if cancelled) when input is requested
