@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="0.5" y="0.5" width="99" height="99" rx="8" fill="#e3e7e8"/>
+  <rect x="2.30" y="2.30" width="16.60" height="16.60" rx="3.60" fill="#a3df89"/>
+  <rect x="22.00" y="2.30" width="16.60" height="16.60" rx="3.60" fill="#90b96d"/>
+  <rect x="41.70" y="2.30" width="16.60" height="16.60" rx="3.60" fill="#77893d"/>
+  <rect x="61.40" y="2.30" width="16.60" height="16.60" rx="3.60" fill="#4c7c42"/>
+  <rect x="81.10" y="2.30" width="16.60" height="16.60" rx="3.60" fill="#3c6638"/>
+  <rect x="2.30" y="22.00" width="16.60" height="16.60" rx="3.60" fill="#90b96d"/>
+  <rect x="22.00" y="22.00" width="16.60" height="16.60" rx="3.60" fill="#a2b96b"/>
+  <rect x="41.70" y="22.00" width="16.60" height="16.60" rx="3.60" fill="#6a803f"/>
+  <rect x="61.40" y="22.00" width="16.60" height="16.60" rx="3.60" fill="#2e5830"/>
+  <rect x="81.10" y="22.00" width="16.60" height="16.60" rx="3.60" fill="#255839"/>
+  <rect x="2.30" y="41.70" width="16.60" height="16.60" rx="3.60" fill="#788a3e"/>
+  <rect x="22.00" y="41.70" width="16.60" height="16.60" rx="3.60" fill="#6c8140"/>
+  <rect x="41.70" y="41.70" width="16.60" height="16.60" rx="3.60" fill="#90b96b"/>
+  <rect x="61.40" y="41.70" width="16.60" height="16.60" rx="3.60" fill="#497a43"/>
+  <rect x="81.10" y="41.70" width="16.60" height="16.60" rx="3.60" fill="#24705f"/>
+  <rect x="2.30" y="61.40" width="16.60" height="16.60" rx="3.60" fill="#4d7a43"/>
+  <rect x="22.00" y="61.40" width="16.60" height="16.60" rx="3.60" fill="#4d7a43"/>
+  <rect x="41.70" y="61.40" width="16.60" height="16.60" rx="3.60" fill="#2a5632"/>
+  <rect x="61.40" y="61.40" width="16.60" height="16.60" rx="3.60" fill="#428359"/>
+  <rect x="81.10" y="61.40" width="16.60" height="16.60" rx="3.60" fill="#439179"/>
+  <rect x="2.30" y="81.10" width="16.60" height="16.60" rx="3.60" fill="#2a5632"/>
+  <rect x="22.00" y="81.10" width="16.60" height="16.60" rx="3.60" fill="#2a5633"/>
+  <rect x="41.70" y="81.10" width="16.60" height="16.60" rx="3.60" fill="#256e5d"/>
+  <rect x="61.40" y="81.10" width="16.60" height="16.60" rx="3.60" fill="#439179"/>
+  <rect x="81.10" y="81.10" width="16.60" height="16.60" rx="3.60" fill="#40835a"/>
+</svg>
