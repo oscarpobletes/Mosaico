@@ -283,11 +283,20 @@ textarea {
   border: 1px solid var(--bd);
   border-radius: 10px;
 }
+.gate-demo {
+  margin: 18px 0 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd);
+}
 body.lock #gate {
   display: block;
 }
 body.lock nav,
 body.lock main,
+body.lock #courseBox,
+body.lock #credit,
+body.boot #credit,
+body.boot #courseBox,
 body.boot nav,
 body.boot main {
   display: none;
@@ -744,7 +753,7 @@ button:disabled {
  <img class="logo" id="logo" alt="">
  <div class="row" style="margin:0">
   <span class="lang" role="group" aria-label="Language"><button id="langEs">ES</button><button id="langEn">EN</button></span>
-  <label><span data-i="course"></span> <select id="course"></select></label>
+  <label id="courseBox"><span data-i="course"></span> <select id="course"></select></label>
   <button class="p" id="demoBtn" data-i="demo"></button>
   <button id="myPassBtn" data-i="myPassword" hidden></button>
   <button id="loginBtn" hidden></button>
@@ -765,7 +774,8 @@ button:disabled {
  <div class="row"><input id="user" data-ph="phUser" autocomplete="username" autocapitalize="none"><input id="pass" type="password" data-ph="phPass" autocomplete="current-password"></div>
  <div class="row"><button class="p" id="loginGo" data-i="signIn"></button></div>
  <p class="hint" id="loginMsg"></p>
- <div class="row"><span class="hint" data-i="gateDemoHint"></span><button id="gateDemo" data-i="demo"></button></div>
+ <p class="hint gate-demo" data-i="gateDemoHint"></p>
+ <button id="gateDemo" data-i="demo"></button>
 </div></div>
 <nav class="np">
  <button class="on" data-tab="students" data-i="tabStudents"></button>
@@ -955,7 +965,7 @@ const STR=[
 ['tour.register.t','Registro','Registration'],
 ['tour.register.x','Se escriben el nombre y el país (obligatorios, con *) y, de forma opcional, la carrera. Después se pulsa Añadir.','Name and country (required, marked *) are entered, plus the career if desired. Then Add is pressed.'],
 ['tour.list.t','Lista de registros','Records'],
-['tour.list.x','Aquí aparecen todos los estudiantes registrados, con el área que el sistema asigna a cada carrera (por ejemplo, Médico y Doctor cuentan como Salud).','All registered students appear here, with the area the system assigns to each career (for example, Physician and Doctor both count as Health).'],
+['tour.list.x','Aquí aparecen todos los estudiantes registrados, con el área que el sistema asigna a cada carrera (por ejemplo, Economía, Contabilidad y Business Administration cuentan como Negocios y finanzas).','All registered students appear here, with the area the system assigns to each career (for example, Economics, Accounting and Business Administration all count as Business & finance).'],
 ['tour.list.coord','El lápiz corrige un dato y el cubo de basura quita un registro.','The pencil fixes a record and the trash can removes it.'],
 ['tour.import.t','Importar una lista','Import a list'],
 ['tour.import.x','Si los datos ya existen, se pega un estudiante por línea con el formato Nombre; País; Carrera.','If the data already exists, one student per line is pasted using the format Name; Country; Career.'],
@@ -969,6 +979,8 @@ const STR=[
 ['tour.adjust.x','Antes de guardar, se puede retocar el resultado: tocar un estudiante y luego otro los intercambia; tocar el título de un equipo mueve allí al estudiante seleccionado. Deshacer revierte el último cambio.','Before saving, the result can be fine-tuned: tapping one student and then another swaps them; tapping a team title moves the selected student there. Undo reverts the last change.'],
 ['tour.save.t','Guardar la ronda','Save the round'],
 ['tour.pdf.t','PDF','PDF'],
+['tour.done.t','Listo','All set'],
+['tour.done.x','Eso es todo. Puedes seguir probando la demo libremente: nada se guarda. «Reiniciar» vuelve a los datos de ejemplo y «Salir de la demo» te devuelve al inicio.','That is all. Feel free to keep trying the demo: nothing is saved. “Reset” brings back the sample data and “Exit demo” takes you back to the start.'],
 ['tour.pdf.x','Con una ronda seleccionada, Descargar PDF genera el archivo con los equipos, las banderas y los nombres de país.','With a round selected, Download PDF generates the file with the teams, flags, and country names.'],
 ['demo','Demo · ~1 min','Demo · ~1 min'],
 ['loginTitle','Iniciar sesión','Sign in'],
@@ -981,12 +993,12 @@ const STR=[
 ['less','Menos importante','Less important'],['more','Más importante','More important'],
 ['advHint','Hacia la derecha, el criterio pesa más al formar equipos; en 0 se ignora. La «i» de cada uno explica qué hace.','Further right, the criterion weighs more when forming teams; at 0 it is ignored. Each “i” explains what it does.'],
 ['tipCountry','Cuanto más alto, más se evita que un mismo país se repita dentro de un equipo.','The higher it is, the more the same country is kept from repeating inside a team.'],
-['tipCareer','Cuanto más alto, más se evita juntar carreras del mismo área (por ejemplo, varias de Salud) en un equipo.','The higher it is, the more careers from the same area (for example, several in Health) are kept apart.'],
+['tipCareer','Cuanto más alto, más se evita juntar carreras del mismo área (por ejemplo, varias de Negocios y finanzas) en un equipo.','The higher it is, the more careers from the same area (for example, several in Business & finance) are kept apart.'],
 ['tipPairs','Cuanto más alto, más se evita juntar estudiantes que ya coincidieron en rondas guardadas.','The higher it is, the more students who already worked together in saved rounds are kept apart.'],
 ['tipEquity','Cuanto más alto, más se prioriza a quienes tuvieron equipos poco diversos antes, para que nadie quede siempre en el peor reparto.','The higher it is, the more priority goes to those who had less diverse teams before, so nobody always gets the worst draw.'],
 ['kCountry','Variedad de países','Country variety'],['kCareer','Variedad de carreras','Career variety'],['kFresh','Compañeros nuevos','New teammates'],
 ['tipKCountry','Promedio de países distintos dentro de cada equipo. 100% = nadie comparte país con su equipo; con un país mayoritario no se llega al 100%.','Average number of different countries inside each team. 100% = nobody shares a country with their team; with a majority country 100% is not reachable.'],
-['tipKCareer','Lo mismo, con las carreras agrupadas por área (por ejemplo, Médico y Doctor cuentan como Salud).','The same, with careers grouped by area (for example, Physician and Doctor both count as Health).'],
+['tipKCareer','Lo mismo, con las carreras agrupadas por área (por ejemplo, Economía, Contabilidad y Business Administration cuentan como Negocios y finanzas).','The same, with careers grouped by area (for example, Economics, Accounting and Business Administration all count as Business & finance).'],
 ['tipKFresh','Porcentaje de parejas de este reparto que no habían coincidido antes en rondas guardadas. 100% = todas son combinaciones nuevas.','Share of pairs in this draw that had not worked together before in saved rounds. 100% = every pairing is new.'],
 ['tour.viewAs.t','Ver como','View as'],
 ['tour.advanced.x','Cada deslizador indica cuánto pesa un criterio: hacia la derecha pesa más y en 0 se ignora. La «i» de cada uno explica qué hace.','Each slider sets how much a criterion weighs: further right weighs more and at 0 it is ignored. The “i” on each one explains what it does.'],
@@ -1002,7 +1014,7 @@ const STR=[
 ['phUser','Correo *','Email *'],['phNewPass','Clave (mín. 8) *','Password (min. 8) *'],
 ['tabUsers','3. Usuarios','3. Users'],
 ['usersTitle','Usuarios y permisos','Users and permissions'],
-['usersHint','Admin: todo, incluidos los estudiantes, los usuarios y la eliminación de rondas. Coordinación: lo mismo que admin, y además imparte materias. Profesorado: solo equipos. Las acciones de esta pestaña se aplican al instante.','Admin: everything, including students, users and deleting rounds. Coordinator: the same as admin, and also teaches subjects. Teacher: teams only. Actions on this tab apply immediately.'],
+['usersHint','Admin: todo, incluidos los estudiantes, los usuarios y la eliminación de rondas. Coordinación: lo mismo que admin, y puede impartir materias. Profesorado: solo equipos. Las acciones de esta pestaña se aplican al instante.','Admin: everything, including students, users and deleting rounds. Coordinator: the same as admin, and can teach subjects. Teacher: teams only. Actions on this tab apply immediately.'],
 ['createUser','Crear usuario','Create user'],
 ['badUser','Correo no válido. Clave: de 8 a 72 caracteres.','Invalid email. Password: 8 to 72 characters.'],
 ['errUsers','No se pudo completar la acción: {0}','The action could not be completed: {0}'],
@@ -1024,7 +1036,7 @@ const STR=[
 ['myPassword','Mi clave','My password'],['promptMyPass','Nueva clave (de 8 a 72 caracteres):','New password (8 to 72 characters):'],['promptMyPass2','Repite la nueva clave:','Repeat the new password:'],['passMismatch','Las claves no coinciden.','The passwords do not match.'],
 ['confirmDelUser','¿Eliminar al usuario {0}? Perderá el acceso.','Delete user {0}? Access will be lost.'],
 ['current','(sesión actual)','(current session)'],
-['tour.viewAs.x','Admin tiene acceso completo, incluidos los estudiantes y la gestión de usuarios. Coordinación tiene lo mismo y además imparte materias, que le aparecen primero al guardar. Profesorado solo ve la pestaña de equipos: asistencia, generar, guardar y descargar.','Admin has full access, including students and user management. Coordinator has the same and also teaches subjects, which come first when saving. Teacher only sees the teams tab: attendance, generate, save, and download.'],
+['tour.viewAs.x','Admin tiene acceso completo, incluidos los estudiantes y la gestión de usuarios. Coordinación tiene lo mismo y puede impartir materias, que le aparecen primero al guardar. Profesorado solo ve la pestaña de equipos: asistencia, generar, guardar y descargar.','Admin has full access, including students and user management. Coordinator has the same and can teach subjects, which come first when saving. Teacher only sees the teams tab: attendance, generate, save, and download.'],
 ['tour.users.t','Usuarios y permisos','Users and permissions'],
 ['tour.users.x','Admin crea y elimina usuarios, cambia su perfil y restablece claves. Cada perfil define qué pestañas y acciones tiene cada usuario.','The admin creates and deletes users, changes their profile, and resets passwords. Each profile defines which tabs and actions each user has.'],
 ['tabSubjects','4. Materias','4. Subjects'],
@@ -1684,7 +1696,7 @@ const currentRound = () => (state.view === 'draft' ? state.draft : course().roun
 
 // Capabilities per role (data, not scattered ifs). Body classes drive what the CSS shows.
 const ALL_CAPS = ['staff', 'admin'];
-const CAPS = { admin: ALL_CAPS, coordinator: ALL_CAPS, professor: ['staff'] }; // a coordinator is an admin who also teaches
+const CAPS = { admin: ALL_CAPS, coordinator: ALL_CAPS, professor: ['staff'] }; // a coordinator is an admin who can teach subjects
 const setCaps = (caps) => ALL_CAPS.forEach((c) => flip(caps.includes(c), c));
 const can = (c) => document.body.classList.contains(c);
 
@@ -1700,7 +1712,7 @@ const iconButton = (attr, id, label, name, extra = '') =>
 
 function renderCourses() {
   const all = new Set(repo.courseNames());
-  for (let y = CONFIG.firstCourse; y <= startYear + 6; y++) {
+  for (let y = CONFIG.firstCourse; y <= startYear + 1; y++) {
     all.add(courseLabel(y));
   }
   $('course').innerHTML = [...all]
@@ -2321,6 +2333,7 @@ const TOUR = [
   { tab: 'teams', sel: '#kpis', key: 'kpis' },
   { tab: 'teams', sel: '#adjHint', need: 'staff', key: 'adjust' },
   { tab: 'teams', sel: '#out', key: 'result' },
+  { key: 'done' },
 ];
 const tour = {
   steps: [],
@@ -2919,7 +2932,7 @@ async function loadSubjects() {
   renderSubjectsAdmin();
   renderSubjects();
 }
-// Only teaching accounts can be assigned subjects: teachers and coordinators (admins who also teach). Plain admins can use every subject anyway.
+// Only teaching accounts can be assigned subjects: teachers and coordinators (admins who can teach). Plain admins can use every subject anyway.
 const staffList = () =>
   state.users.filter((u) => TEACHING_ROLES.includes(u.role)).sort((a, b) => a.username.localeCompare(b.username));
 const PICKER_SEARCH_FROM = 8; // with more accounts than this, the tick list gets a search field

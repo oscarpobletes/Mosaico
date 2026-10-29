@@ -44,7 +44,7 @@ Each course keeps its own students and rounds.
 | Manage students, users, and subjects | | ✔ | ✔ |
 | Can be assigned subjects | ✔ | ✔ | |
 
-A coordinator has the same permissions as an admin and also teaches.
+A coordinator has the same permissions as an admin and can teach subjects.
 
 ## Setup
 

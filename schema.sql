@@ -36,7 +36,7 @@ create table if not exists public.rounds (
 create index if not exists rounds_course_idx on public.rounds (course, created_at);
 
 -- One row per account with access, holding its role. 'admin' manages everything; 'coordinator' has exactly the
--- admin's permissions and also teaches (it can be assigned subjects); 'professor' only forms and saves teams for
+-- admin's permissions and can teach subjects (it can be assigned subjects); 'professor' only forms and saves teams for
 -- their own subjects. Written only by the admin-users function, except the first admin (see the top of this file).
 create table if not exists public.staff (
   user_id    uuid primary key references auth.users (id) on delete cascade,

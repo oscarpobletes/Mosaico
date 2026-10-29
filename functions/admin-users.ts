@@ -10,7 +10,7 @@
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.117.3';
 
 const ROLES = ['admin', 'coordinator', 'professor'] as const;
-// Roles that manage the app. A coordinator has the same permissions as an admin and also teaches.
+// Roles that manage the app. A coordinator has the same permissions as an admin and can teach subjects.
 const MANAGER_ROLES: readonly string[] = ['admin', 'coordinator'];
 type Role = (typeof ROLES)[number];
 type Action = 'list' | 'create' | 'role' | 'password' | 'delete';
