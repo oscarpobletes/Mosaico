@@ -2127,7 +2127,11 @@ $('importBtn').onclick = async () => {
   }
   $('importText').value = rejected.join('\n');
   await refresh();
-  notify(t('imported', rows.length) + (rejected.length ? '\n' + t('importBad', rejected.length) : ''), 'info');
+  if (rows.length) {
+    notify(t('imported', rows.length) + (rejected.length ? '\n' + t('importBad', rejected.length) : ''), 'info');
+  } else {
+    notify(rejected.length ? t('importBad', rejected.length) : t('importEmpty'), 'warn');
+  }
 };
 $('list').onclick = async (e) => {
   const b = e.target.closest('button');
