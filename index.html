@@ -765,6 +765,10 @@ button:disabled {
   width: 100%;
   margin: 6px 0;
 }
+.modal-card .pw-wrap {
+  margin: 6px 0;
+  width: 100%;
+}
 /* Tour */
 #hl {
   position: fixed;
@@ -971,7 +975,7 @@ button:disabled {
 <footer class="credit np" id="credit"></footer>
 <div id="toast" class="np" role="status" aria-live="polite"></div>
 <div id="modal" class="np" hidden><div class="modal-card" role="dialog" aria-modal="true">
- <p id="modalText"></p><input id="modalInput" hidden autocomplete="new-password">
+ <p id="modalText"></p><div class="pw-wrap" id="modalInputWrap"><input id="modalInput" hidden autocomplete="new-password"><button type="button" class="pw-eye" id="modalEye" hidden tabindex="-1"></button></div>
  <div class="row"><button class="p" id="modalOk"></button><button id="modalCancel"></button></div>
 </div></div>
 <div id="ov" class="np" hidden></div><div id="hl" class="np" hidden></div>
@@ -1227,10 +1231,24 @@ function ask(message, { input = false, type = 'text', ok, value = '' } = {}) {
   // resolves true/false, or the typed text (null if cancelled) when input is requested
   return new Promise((resolve) => {
     const box = $('modalInput');
+    const eye = $('modalEye');
     $('modalText').textContent = message;
     box.hidden = !input;
     box.type = type;
     box.value = value;
+    // show/hide eye button and render icon
+    const isPassword = input && type === 'password';
+    eye.hidden = !isPassword;
+    if (isPassword) {
+      eye.innerHTML = EYE_SVG;
+      eye.setAttribute('aria-label', lang === 'es' ? 'Mostrar contraseña' : 'Show password');
+      eye.onclick = () => {
+        const show = box.type === 'password';
+        box.type = show ? 'text' : 'password';
+        eye.innerHTML = show ? EYE_OFF_SVG : EYE_SVG;
+        eye.setAttribute('aria-label', show ? (lang === 'es' ? 'Ocultar contraseña' : 'Hide password') : (lang === 'es' ? 'Mostrar contraseña' : 'Show password'));
+      };
+    }
     $('modalOk').textContent = ok || t('ok');
     $('modalCancel').textContent = t('cancel');
     $('modal').hidden = false;
@@ -1240,6 +1258,10 @@ function ask(message, { input = false, type = 'text', ok, value = '' } = {}) {
     }
     const done = (v) => {
       $('modal').hidden = true;
+      // reset eye state for next use
+      box.type = 'text';
+      eye.hidden = true;
+      eye.onclick = null;
       $('modalOk').onclick = $('modalCancel').onclick = box.onkeydown = $('modal').onkeydown = null;
       resolve(v);
     };
