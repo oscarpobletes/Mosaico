@@ -956,7 +956,7 @@ button:disabled {
  <h2 data-i="subjectsTitle"></h2>
  <p class="hint" data-i="subjectsHint"></p>
  <div class="row">
-  <input id="sName" data-ph="phNewSubject" autocomplete="off" maxlength="200">
+  <input id="sName" data-ph="phNewSubject" autocomplete="off" maxlength="100">
   <button id="sAdd" data-i="addSubject"></button>
  </div>
  <details id="sBulkBox">
@@ -1143,7 +1143,7 @@ const STR=[
 ['phNewSubject','Nombre de la materia *','Subject name *'],
 ['addSubject','Añadir materia','Add subject'],
 ['editSubject','Editar materia {0}','Edit subject {0}'],
-['promptEditSubject','Nombre de la materia (máximo 200 caracteres):','Subject name (max. 200 characters):'],
+['promptEditSubject','Nombre de la materia:','Subject name:'],
 ['confirmDropSingleSubject','¿Quitar la materia «{0}» de la lista?','Remove the subject “{0}” from the list?'],
 ['subjectNameLabel','Nombre de la materia','Subject name'],
 ['teachersOne','1 profesor:','1 teacher:'],['teachersMany','{0} profesores:','{0} teachers:'],
@@ -3217,7 +3217,7 @@ $('sBulkAdd').onclick = () => {
   let added = 0;
   $('sBulk')
     .value.split('\n')
-    .map((l) => l.trim().slice(0, 200))
+    .map((l) => l.trim().slice(0, 100))
     .forEach((name) => {
       if (name && !seen.has(norm(name))) {
         seen.add(norm(name));
