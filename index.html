@@ -988,6 +988,7 @@ const STR=[
 ['confirmRemove','¿Quitar a {0} de la lista?','Remove {0} from the list?'],
 ['needNameCountry','Nombre y país son obligatorios (*).','Name and country are required (*).'],
 ['imported','{0} estudiantes importados.','{0} students imported.'],
+['importEmpty','El cuadro está vacío. Pega los datos antes de importar.','The box is empty. Paste the data before importing.'],
 ['importBad','No se reconoció el país en {0} líneas (siguen en el cuadro).','Country not recognized on {0} lines (they remain in the box).'],
 ['saveChanges','Guardar cambios','Save changes'],['cancel','Cancelar','Cancel'],
 ['teamsTitle','Formar equipos','Form teams'],
@@ -1031,7 +1032,7 @@ const STR=[
 ['tour.list.x','Aquí aparecen todos los estudiantes registrados, con el área que el sistema asigna a cada carrera (por ejemplo, Economía, Contabilidad y Business Administration cuentan como Negocios y finanzas).','All registered students appear here, with the area the system assigns to each career (for example, Economics, Accounting and Business Administration all count as Business & finance).'],
 ['tour.list.coord','El lápiz corrige un dato y el cubo de basura quita un registro.','The pencil fixes a record and the trash can removes it.'],
 ['tour.import.t','Importar una lista','Import a list'],
-['tour.import.x','Si los datos ya existen, se pega un estudiante por línea con el formato Nombre; País; Carrera.','If the data already exists, one student per line is pasted using the format Name; Country; Career.'],
+['tour.import.x','Despliega el panel «Importar una lista completa» y pega los datos: un estudiante por línea, con el formato Nombre; País; Carrera. Después pulsa Importar.','Expand the "Import a full list" panel and paste the data: one student per line using the format Name; Country; Career. Then press Import.'],
 ['tour.attendance.t','Asistencia de hoy','Today’s attendance'],
 ['tour.attendance.x','Tocar un nombre marca la ausencia: el estudiante queda tachado y no entra en los equipos.','Tapping a name marks an absence: the student is crossed out and left out of the teams.'],
 ['tour.generate.t','Generar equipos','Generate teams'],
@@ -1337,7 +1338,7 @@ const CONFIG = {
   program: 'MBA', // shown on the team sheet and the PDF
   institution: 'UAM', // shown in the browser tab title ('' to hide it)
   logoAlt: { es: 'UAM · Facultad de Ciencias Económicas y Empresariales', en: 'UAM · Faculty of Economics and Business' },
-  credit: { es: 'Propuesto por Oscar Poblete Sáenz • MBA • 2026/27', en: 'Proposed by Oscar Poblete Sáenz • MBA • 2026/27' }, // footer ('' to hide it)
+  credit: { es: '', en: '' }, // footer ('' to hide it)
   firstCourse: 2026, // first academic year offered in the Course selector
   // Subjects for local mode and the demo, in timetable order. In shared mode they live in the database (Subjects tab).
   subjects: [
@@ -2037,6 +2038,10 @@ $('addBtn').onclick = async () => {
   $('fName').focus();
 };
 $('importBtn').onclick = async () => {
+  if (!$('importText').value.trim()) {
+    notify(t('importEmpty'), 'warn');
+    return;
+  }
   const rows = [],
     rejected = [];
   $('importText')
@@ -2354,7 +2359,8 @@ class PdfExporter {
         top = this.header();
       }
     }
-    const name = ('Mosaico_' + state.course + '_' + (this.round.title || 'teams'))
+    const date = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const name = ('Mosaico_' + date + '_' + (this.round.title || 'teams'))
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^A-Za-z0-9_-]+/g, '-');
