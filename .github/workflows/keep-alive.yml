@@ -1,4 +1,4 @@
-# Queries the Supabase database twice a week so a free project is never paused for inactivity.
+# Queries the Supabase database once a day so a free project is never paused for inactivity.
 # Needs NO repository secrets: it reads the project URL and the PUBLIC anon / publishable key from SB in
 # index.html (the same values every visitor's browser already receives). While SB is empty (local mode) it
 # simply does nothing. If the SB line cannot be found at all, the run FAILS so the problem is not silent.
