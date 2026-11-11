@@ -1,7 +1,7 @@
 # Queries the Supabase database twice a week so a free project is never paused for inactivity.
 # Needs NO repository secrets: it reads the project URL and the PUBLIC anon / publishable key from SB in
 # index.html (the same values every visitor's browser already receives). While SB is empty (local mode) it
-# simply does nothing.
+# simply does nothing. If the SB line cannot be found at all, the run FAILS so the problem is not silent.
 name: keep-alive
 
 on:
@@ -25,13 +25,19 @@ jobs:
 
       - name: Call public.ping()
         run: |
-          line=$(grep -m1 '^const SB = {' index.html || true)
+          # The line may be indented, so allow leading whitespace.
+          line=$(grep -m1 -E '^[[:space:]]*const SB = \{' index.html || true)
+          if [ -z "$line" ]; then
+            echo "ERROR: could not find the 'const SB = {' line in index.html (did its format change?)." >&2
+            exit 1
+          fi
           url=$(printf '%s' "$line" | sed -nE "s/.*url: *'([^']*)'.*/\1/p")
           key=$(printf '%s' "$line" | sed -nE "s/.*key: *'([^']*)'.*/\1/p")
           if [ -z "$url" ] || [ -z "$key" ]; then
             echo "SB.url / SB.key are empty in index.html (local mode): nothing to ping."
             exit 0
           fi
+          echo "Pinging $url"
           auth=()
           case "$key" in eyJ*) auth=(-H "Authorization: Bearer $key") ;; esac # legacy anon JWT; sb_publishable_ keys go in apikey only
           curl --fail --silent --show-error --retry 3 \
